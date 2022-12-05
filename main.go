@@ -1,13 +1,19 @@
 package main
 
 import (
-	"learngo/learngo/something"
+	"fmt"
+	"strings"
 )
 
+func lenAndUpper(name string) (int, string) {
+	return len(name), strings.ToUpper(name)
+}
 
+func repeatMe(words ...string) {
+	fmt.Println(words)
+
+}
 
 func main() {
-	fmt.Println("Hello World")
-	something.SayHello()
-	something.sayBye()
+	repeatMe("sehun","jins","kopiko","eclipse","TWG")
 }
