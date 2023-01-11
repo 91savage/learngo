@@ -33,18 +33,31 @@ import (
 // 	return 1
 // }
 
-func superAdd(numbers ...int) int {
-	total := 0 
-	for _, number := range numbers {
-		total += number
-	}
-	return total
-}
+// func superAdd(numbers ...int) int {
+// 	total := 0 
+// 	for _, number := range numbers {
+// 		total += number
+// 	}
+// 	return total
+// }
 
-func main() {
-	result := superAdd(1,2,3,4,5,6)
-	fmt.Println(result)
-}
+// func canIDrink(age int) bool {
+// 	if koreanAge := age +2; koreanAge < 18 {
+// 		return false
+// 	}
+// 		return true
+// }
+
+// func main() {
+// 	fmt.Println(canIDrink(15))
+// }
+
+
+
+// func main() {
+// 	result := superAdd(1,2,3,4,5,6)
+// 	fmt.Println(result)
+// }
 
 // func lenAndUpper(name string) (int, string) {
 //   // multi 값 return
@@ -65,3 +78,19 @@ func main() {
 // 	fmt.Println(totalLength, up)
 	
 // }
+
+
+func canIDrink(age int) bool {
+	switch koreanAge := age +2; koreanAge {
+
+	case 10:
+		return false
+	case 18:
+		return true
+	}
+	return false
+}
+
+func main() {
+	fmt.Println(canIDrink(16))
+}
