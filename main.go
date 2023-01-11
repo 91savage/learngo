@@ -102,3 +102,6 @@ func main() {
 	*b=20
 	fmt.Println(a)
 }
+
+// & : Address
+// * : See trough
