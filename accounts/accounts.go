@@ -12,3 +12,4 @@ func NewAccount(owner string) *Account{
 	return &account
 
 }
+
