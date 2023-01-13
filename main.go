@@ -96,12 +96,47 @@ import (
 // 	fmt.Println(canIDrink(16))
 // }
 
-func main() {
-	a:=2
-	b:= &a
-	*b=20
-	fmt.Println(a)
-}
+// func main() {
+// 	a:=2
+// 	b:= &a
+// 	*b=20
+// 	fmt.Println(a)
+// }
 
 // & : Address
 // * : See trough
+
+
+//Slice, Append
+
+// func main() {
+// 	names := []string{"sehun","Merry","jins"}
+// 	names = append(names, "Muery")
+// 	fmt.Println(names)
+// }
+
+
+// Map
+
+// func main() {
+//                key    value
+// 	sehun := map[string]int{"name":12,"age":56}
+// 	fmt.Println(sehun)
+
+// 	for key,_ := range sehun {
+// 		fmt.Println(key)
+// 	}
+// }
+
+
+type Person struct {
+	name	string
+	age		int
+	favFood	[]string
+}
+
+func main() {
+	favFood := []string{"Coffee", "Pho"}
+	sehun := Person{name:"sehun", age:30, favFood:favFood}
+	fmt.Println(sehun)
+}
