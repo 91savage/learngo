@@ -1,10 +1,17 @@
 package accounts
 
+import (
+	"fmt"
+	"errors"
+)
+
 // Account struct
 type Account struct {
 	owner string
 	balance int
 }
+
+var errNoMoney = errors.New("Can't Withdraw you are poor")
 
 // NewAccount creates Account
 func NewAccount(owner string) *Account{
@@ -19,6 +26,29 @@ func (a *Account) Deposit(amount int) {  // (a Account) Go에서 receiver 라고
 }
 
 // Balance of your account
-func (a *Account) Balance() int {
+func (a Account) Balance() int {
 	return a.balance
+}
+
+// Withdraw x amount from your account
+func (a *Account) Withdraw(amount int) error {
+	if a.balance < amount {
+		return errNoMoney
+	}
+	a.balance -= amount
+	return nil
+}
+
+// ChangeOwner of the account
+func (a *Account) ChangeOwner(newOwner string) {
+	a.owner = newOwner
+}
+
+// Owner of the account
+func (a Account) Owner() string {
+	return a.owner
+}
+
+func (a Account) String() string {
+	return fmt.Sprint(a.Owner(), "'s Account. \nHas: ", a.Balance())
 }
