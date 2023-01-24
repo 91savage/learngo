@@ -1,28 +1,49 @@
 package main
 
 import (
+	"errors"
+	"net/http"
 	"fmt"
-	"time"
 )
 
-// Goroutines : 다른 함수와 동시에 실행시키는 함수
-// main 함수가 끝나면 Goroutines도 종료 됨.
-// Main 함수는 결과를 '저장' 하는 곳.
-
-
-func main() {
-	c := make(chan string)
-	people := [5]string{"Sehun", "Jins", "Merry","Mozzi","Ddung"}
-	for _, person := range people {
-		go isSexy(person, c) // 인수로 person(value값) 과 c(채널)을 받음
-	}
-	for i:=0; i<len(people); i++ {
-		fmt.Println(<-c)
-	}
-
+type requestResult struct {
+	url	string
+	status	string
 }
 
-func isSexy(person string, c chan string) {
-	time.Sleep(time.Second * 10)
-	c <- person + " is nice"
+var errRequestFailed = errors.New("Request failed")
+
+func main() {
+	results := make(map[string]string)
+	c := make(chan requestResult)
+	urls := []string{
+		"https://www.airbnb.com",
+		"https://www.google.com",
+		"https://www.amazon.com",
+		"https://www.reddit.com",
+		"https://www.google.com",
+		"https://www.soundcloud.com",
+		"https://www.facebook.com",
+		"https://www.instagram.com",
+		"https://www.naver.com",
+	}
+	for _, url := range urls {
+		go hitURL(url, c)
+	}
+	for i :=0; i< len(urls); i++ {
+		result := <-c
+		results[result.url] = result.status
+	}
+	for url, status := range results {
+		fmt.Println(url, status)
+	}
+}
+// <-를 인자로 받는 경우는 Send only
+func hitURL(url string, c chan<- requestResult) {
+	resp, err := http.Get(url)
+	status := "OK"
+	if err != nil || resp.StatusCode >= 400 {
+		status = "Failed"
+	}
+		c <- requestResult{url:url, status: status}
 }
