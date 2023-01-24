@@ -1,49 +1,41 @@
 package main
 
 import (
-	"errors"
+	"log"
 	"net/http"
-	"fmt"
+	"github.com/PuerkitoBio/goquery"
 )
 
-type requestResult struct {
-	url	string
-	status	string
-}
-
-var errRequestFailed = errors.New("Request failed")
+var baseURL string ="https://kr.indeed.com/jobs?q=python&l=&from=searchOnHP&vjk=b49175f39df025f6"
 
 func main() {
-	results := make(map[string]string)
-	c := make(chan requestResult)
-	urls := []string{
-		"https://www.airbnb.com",
-		"https://www.google.com",
-		"https://www.amazon.com",
-		"https://www.reddit.com",
-		"https://www.google.com",
-		"https://www.soundcloud.com",
-		"https://www.facebook.com",
-		"https://www.instagram.com",
-		"https://www.naver.com",
-	}
-	for _, url := range urls {
-		go hitURL(url, c)
-	}
-	for i :=0; i< len(urls); i++ {
-		result := <-c
-		results[result.url] = result.status
-	}
-	for url, status := range results {
-		fmt.Println(url, status)
+	getPages()
+}
+
+func getPages() int {
+	res,err := http.Get(baseURL)
+	checkErr(err)
+	checkCode(res)
+
+	defer res.Body.Close()
+
+	doc, err := goquery.NewDocumentFromReader(res.Body)
+	checkErr(err)
+
+	doc.Find(".pagination").Each()
+
+	return 0
+}
+
+func checkErr(err error) {
+	if err != nil {
+		log.Fatalln(err) // kill the program(fatalln)
+	
 	}
 }
-// <-를 인자로 받는 경우는 Send only
-func hitURL(url string, c chan<- requestResult) {
-	resp, err := http.Get(url)
-	status := "OK"
-	if err != nil || resp.StatusCode >= 400 {
-		status = "Failed"
+
+func checkCode(res *http.Response) {
+	if res.StatusCode != 200 {
+		log.Fatalln("Request failed with Status:", res.StatusCode)
 	}
-		c <- requestResult{url:url, status: status}
 }
