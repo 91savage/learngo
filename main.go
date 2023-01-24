@@ -1,45 +1,25 @@
 package main
 
 import (
-	"errors"
-	"net/http"
+	"time"
 	"fmt"
 )
 
-var errRequestFailed = errors.New("Request failed")
+// Goroutines : 다른 함수와 동시에 실행시키는 함수
+// main 함수가 끝나면 Goroutines도 종료 됨.
+// Main 함수는 결과를 '저장' 하는 곳.
+
 
 func main() {
-	var results = make(map[string]string)
-	urls := []string{
-		"https://www.airbnb.com",
-		"https://www.google.com",
-		"https://www.amazon.com",
-		"https://www.reddit.com",
-		"https://www.google.com",
-		"https://www.soundcloud.com",
-		"https://www.facebook.com",
-		"https://www.instagram.com",
-		"https://www.naver.com",
-	}
-	for _, url := range urls {
-		result := "OK"
-		err := hitURL(url)
-		if err != nil {
-			result ="Failed"
-		}
-		results[url] = result
-	}
-	for url, result := range results {
-		fmt.Println(url, result)
-	}
+	go sexyCount("SEhun")
+	go sexyCount("merry")
+	time.Sleep(time.Second * 5)
+
 }
-// nill 값이 없음
-func hitURL(url string) error{
-	fmt.Println("Checking: ", url)
-	resp, err := http.Get(url)
-	if err != nil || resp.StatusCode >= 400 {
-		fmt.Println(err,resp.StatusCode)
-		return errRequestFailed
+
+func sexyCount(person string) {
+	for i:=0; i<10; i++ {
+		fmt.Println(person, "is sexy" , i)
+		time.Sleep(time.Second)
 	}
-	return nil
 }
