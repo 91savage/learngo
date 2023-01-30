@@ -3,17 +3,18 @@ package main
 import (
 	"log"
 	"net/http"
+
 	"github.com/PuerkitoBio/goquery"
 )
 
-var baseURL string ="https://kr.indeed.com/jobs?q=python&l=&from=searchOnHP&vjk=b49175f39df025f6"
+var baseURL string = "https://kr.indeed.com/jobs?q=python&l=&from=searchOnHP&vjk=b49175f39df025f6"
 
 func main() {
 	getPages()
 }
 
 func getPages() int {
-	res,err := http.Get(baseURL)
+	res, err := http.Get(baseURL)
 	checkErr(err)
 	checkCode(res)
 
@@ -30,7 +31,7 @@ func getPages() int {
 func checkErr(err error) {
 	if err != nil {
 		log.Fatalln(err) // kill the program(fatalln)
-	
+
 	}
 }
 
