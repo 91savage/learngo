@@ -22,6 +22,21 @@ func main() {
 func getPage(page int) {
 	pageURL := baseURL + "?page=" + strconv.Itoa((page * 2))
 	fmt.Println("Requesting", pageURL)
+	res, err := http.Get(pageURL)
+	checkErr(err)
+	checkCode(res)
+
+	defer res.Body.Close()
+
+	doc, err := goquery.NewDocumentFromReader(res.Body)
+	checkErr(err)
+
+	searchCards := doc.Find(".post")
+
+	searchCards.Each(func(i int, s *goquery.Selection) {
+
+	})
+
 }
 
 func getPages() int {
