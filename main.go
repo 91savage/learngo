@@ -9,10 +9,11 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-var baseURL string = "https://openweather.co.uk/blog/category/weather"
+var baseURL string = "https://www.mbn.co.kr/news/politics/"
 
 func main() {
 	totalPages := getPages()
+	fmt.Println(totalPages)
 
 	for i := 0; i < totalPages; i++ {
 		getPage(i)
@@ -20,7 +21,7 @@ func main() {
 }
 
 func getPage(page int) {
-	pageURL := baseURL + "?page=" + strconv.Itoa((page * 2))
+	pageURL := baseURL + "?page=" + strconv.Itoa((page)) + "&vod=&category=politics"
 	fmt.Println("Requesting", pageURL)
 	res, err := http.Get(pageURL)
 	checkErr(err)
@@ -31,17 +32,19 @@ func getPage(page int) {
 	doc, err := goquery.NewDocumentFromReader(res.Body)
 	checkErr(err)
 
-	searchCards := doc.Find(".post")
+	searchCards := doc.Find(".tit")
+	fmt.Println(res.Body)
 
-	searchCards.Each(func(i int, s *goquery.Selection) {
-
+	searchCards.Each(func(i int, s *goquery.Selection) { // s means each cards
+		id, _ := s.Attr("href")
+		fmt.Println(id)
 	})
 
 }
 
 func getPages() int {
 	pages := 0
-	res, err := http.Get(baseURL)
+	res, err := http.Get(baseURL + "?page=1&vod=&category=politics")
 	checkErr(err)
 	checkCode(res)
 	defer res.Body.Close()
@@ -49,7 +52,7 @@ func getPages() int {
 	doc, err := goquery.NewDocumentFromReader(res.Body)
 	checkErr(err)
 
-	doc.Find(".pagination").Each(func(i int, s *goquery.Selection) {
+	doc.Find(".paging_2018").Each(func(i int, s *goquery.Selection) {
 		pages = s.Find("a").Length()
 
 	})
