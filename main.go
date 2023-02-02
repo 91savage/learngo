@@ -44,6 +44,7 @@ func getPage(page int, mainC chan<- []extractedJob) {
 	var jobs []extractedJob
 	c := make(chan extractedJob)                                                      // go routine
 	pageURL := baseURL + "?page=" + strconv.Itoa((page)) + "&vod=&category=entertain" // Itoa 는 숫자를 텍스트로 변환
+
 	fmt.Println("Requesting", pageURL)
 	res, err := http.Get(pageURL)
 	checkErr(err)
