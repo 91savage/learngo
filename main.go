@@ -9,19 +9,27 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
+type extractJob struct {
+	id      string
+	title   string
+	summary string
+	date    string
+	writer  string
+}
+
 var baseURL string = "https://www.mbn.co.kr/news/politics/"
 
 func main() {
-	totalPages := getPages()
+	totalPages := getPages() - 5 // MBN 페이징은 10까지만 돼있음 & 1page만 이상하게 tit 하위에 a href id 값이 다름. 그래서 2 page 부터 10page 까지만 진행함.
 	fmt.Println(totalPages)
 
-	for i := 0; i < totalPages; i++ {
+	for i := 2; i <= totalPages; i++ {
 		getPage(i)
 	}
 }
 
 func getPage(page int) {
-	pageURL := baseURL + "?page=" + strconv.Itoa((page)) + "&vod=&category=politics"
+	pageURL := baseURL + "?page=" + strconv.Itoa((page)) + "&vod=&category=politics" // Itoa 는 숫자를 텍스트로 변환
 	fmt.Println("Requesting", pageURL)
 	res, err := http.Get(pageURL)
 	checkErr(err)
@@ -33,11 +41,15 @@ func getPage(page int) {
 	checkErr(err)
 
 	searchCards := doc.Find(".tit")
-	fmt.Println(res.Body)
 
 	searchCards.Each(func(i int, s *goquery.Selection) { // s means each cards
-		id, _ := s.Attr("href")
+		id, _ := s.Find("a").Attr("href")
+		// fmt.Println(exists)
 		fmt.Println(id)
+		// if exists {
+		// 	fmt.Println(id)
+		// }
+
 	})
 
 }
