@@ -7,6 +7,7 @@ import (
 func solution(num_list []int) []int{
 	var reverse [] int
 	len := len(num_list) -1
+	
 	for i:=len; i>=0; i-- {	
 		reverse = append(reverse, num_list[i])
 	}
