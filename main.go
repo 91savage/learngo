@@ -25,26 +25,27 @@ var baseURL string = "https://www.mbn.co.kr/news/entertain/"
 func main() {
 	var jobs []extractedJob
 	c := make(chan []extractedJob)
-
 	totalPages := getPages() - 5 // MBN 페이징은 10까지만 돼있음 & 1page만 이상하게 tit 하위에 a href id 값이 다름. 그래서 2 page 부터 10page 까지만 진행함.
+
 	for i := 2; i <= totalPages; i++ {
 		go getPage(i, c)
 	}
 
-	for i := 0; i < totalPages; i++ {
-		extractedJobs := <-c
-		jobs = append(jobs, extractedJobs...)
+	for i := 2; i<= totalPages; i++ {
+		extractedJob := <-c
+		jobs = append(jobs, extractedJob...)
 	}
 
 	writeJobs(jobs)
-	fmt.Println("Done, extracted", len(jobs))
+	fmt.Println("Done, extracted" , len(jobs))
 }
+
+
 
 func getPage(page int, mainC chan<- []extractedJob) {
 	var jobs []extractedJob
-	c := make(chan extractedJob)                                                      // go routine
+	c := make(chan extractedJob)
 	pageURL := baseURL + "?page=" + strconv.Itoa((page)) + "&vod=&category=entertain" // Itoa 는 숫자를 텍스트로 변환
-
 	fmt.Println("Requesting", pageURL)
 	res, err := http.Get(pageURL)
 	checkErr(err)
@@ -58,12 +59,13 @@ func getPage(page int, mainC chan<- []extractedJob) {
 	searchCards := doc.Find(".article_list")
 
 	searchCards.Each(func(i int, s *goquery.Selection) { // s means each cards
-		go extractJob(s, c)
+		go extractJob(s,c)
 	})
 
-	for i := 0; i < searchCards.Length(); i++ {
+	for i:=0; i< searchCards.Length(); i++ {
 		job := <-c
 		jobs = append(jobs, job)
+
 	}
 
 	mainC <- jobs
@@ -92,7 +94,7 @@ func cleanString(str string) string {
 
 func getPages() int {
 	pages := 0
-	res, err := http.Get(baseURL + "?page=1&vod=&category=entertain")
+	res, err := http.Get(baseURL + "?page=2&vod=&category=entertain")
 	checkErr(err)
 	checkCode(res)
 	defer res.Body.Close()
