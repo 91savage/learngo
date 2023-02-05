@@ -120,6 +120,7 @@ func writeJobs(jobs []extractedJob) {
 	wErr := w.Write(headers)
 	checkErr(wErr)
 
+
 	for _, job := range jobs {
 		jobSlice := []string{job.id, job.title, job.summary, job.date, job.writer}
 		jwErr := w.Write(jobSlice)
