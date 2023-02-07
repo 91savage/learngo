@@ -2,16 +2,15 @@ package main
 
 import "fmt"
 
-func solution(n int) string {
-	var result string
-
+func solution() {
+	var n int
+	fmt.Scanf("%d", &n)
 	for i := 1; i <= n; i++ {
 		for j := 1; j <= i; j++ {
-			result += "*"
+			fmt.Print("*")
 		}
-		result += "\n"
+		fmt.Println()
 	}
-	return result
 }
 
 func main() {
