@@ -26,10 +26,10 @@ func Scrape(term string) {
 	fmt.Println(baseURL)
 	var jobs []extractedJob
 	c := make(chan []extractedJob)
-	totalPages := getPages(baseURL) - 5 // MBN 페이징은 10까지만 돼있음 & 1page만 이상하게 tit 하위에 a href id 값이 다름. 그래서 2 page 부터 10page 까지만 진행함.
+	totalPages := getPages(baseURL, term) - 5 // MBN 페이징은 10까지만 돼있음 & 1page만 이상하게 tit 하위에 a href id 값이 다름. 그래서 2 page 부터 10page 까지만 진행함.
 
 	for i := 2; i <= totalPages; i++ {
-		go getPage(i, baseURL, c)
+		go getPage(i, baseURL, c, term)
 	}
 
 	for i := 2; i <= totalPages; i++ {
@@ -41,10 +41,10 @@ func Scrape(term string) {
 	fmt.Println("Done, extracted", len(jobs))
 }
 
-func getPage(page int, url string, mainC chan<- []extractedJob) {
+func getPage(page int, url string, mainC chan<- []extractedJob, term string) {
 	var jobs []extractedJob
 	c := make(chan extractedJob)
-	pageURL := url + "?page=" + strconv.Itoa((page)) + "&vod=&category=entertain" // Itoa 는 숫자를 텍스트로 변환
+	pageURL := url + "?page=" + strconv.Itoa((page)) + "&vod=&category=" + term // Itoa 는 숫자를 텍스트로 변환
 	fmt.Println("Requesting", pageURL)
 	res, err := http.Get(pageURL)
 	checkErr(err)
@@ -73,10 +73,10 @@ func getPage(page int, url string, mainC chan<- []extractedJob) {
 
 func extractJob(s *goquery.Selection, c chan<- extractedJob) {
 	id, _ := s.Find(".tit>a").Attr("href")
-	title := cleanString(s.Find(".tit>a").Text())
-	summary := cleanString(s.Find(".desctxt>a").Text())
-	date := cleanString(s.Find(".date").Text())
-	writer := cleanString(s.Find(".name_b").Text())
+	title := CleanString(s.Find(".tit>a").Text())
+	summary := CleanString(s.Find(".desctxt>a").Text())
+	date := CleanString(s.Find(".date").Text())
+	writer := CleanString(s.Find(".name_b").Text())
 
 	c <- extractedJob{
 		id:      id,
@@ -86,14 +86,15 @@ func extractJob(s *goquery.Selection, c chan<- extractedJob) {
 		writer:  writer}
 }
 
-func cleanString(str string) string {
+// CleanString cleans a string
+func CleanString(str string) string {
 	return strings.Join(strings.Fields(strings.TrimSpace(str)), " ")
 
 }
 
-func getPages(url string) int {
+func getPages(url string, term string) int {
 	pages := 0
-	res, err := http.Get(url + "?page=2&vod=&category=entertain")
+	res, err := http.Get(url + "?page=2&vod=&category=" + term)
 	checkErr(err)
 	checkCode(res)
 	defer res.Body.Close()
