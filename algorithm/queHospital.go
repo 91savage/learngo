@@ -3,10 +3,18 @@ package main
 import "fmt"
 
 func solution(emergency []int) []int {
+	result := make([]int, len(emergency))
 
-	for i := 0; i < len(emegency); i++ {
-
+	for i:=0; i< len(emergency); i++ {
+		for j :=0; j< len(emergency); j++ {
+			if emergency[i] < emergency[j] {
+				result[i]++
+			}
+		}
+		result[i]++
 	}
+	return result
+	
 }
 
 func main() {
