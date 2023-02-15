@@ -4,41 +4,25 @@ import (
 	"fmt"
 )
 
+func solution(hp int) int {
 
-func solution(hp int)int{
-	
-	big :=5
-	middle :=3
-	small :=1
+	answer := 0
 
-	result :=0
-	tmp :=0
-	tmp2 :=0
-
-	switch {
-	case hp % big == 0:
-		result = hp/big
-	case hp % big != 0:
-		tmp = hp % big
-		if tmp >= 3 {
-			tmp2 = tmp%middle
-			result = hp/big+ tmp/middle + tmp2/small
-		}else {
-			tmp2 = tmp%middle
-			result = hp/big + tmp2/small
-		}
-
+	if hp/5 != 0 {
+		answer += hp / 5
+		hp %= 5
 	}
-	return result
+	if hp/3 != 0 {
+		answer += hp / 3
+		hp %= 3
+	}
+	if hp/1 != 0 {
+		answer += hp / 1
+	}
+	return answer
 
 }
 
-func main(){
+func main() {
 	fmt.Println(solution(22))
 }
-
-//[공격력]
-//장군 5
-//병정 3
-//일 1
-
