@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strings"
 )
 
 var morse = map[string]string{
@@ -34,23 +35,14 @@ var morse = map[string]string{
 }
 
 func solution(letter string) string {
-	word := ""
+
 	result := ""
 
-	for i := 0; i < len(letter); i++ {
-		if string(letter[i]) == " " {
-			val, _ := morse[word]
-			result += val
-			word = ""
-		} else {
-			word += string(letter[i])
-		}
+	for _, word := range strings.Split(letter, " ") {
+		result += morse[word]
 	}
-
-	val, _ := morse[word]
-	result += val
-
 	return result
+
 }
 
 func main() {
